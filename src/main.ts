@@ -4,11 +4,14 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import './style.css'
+import router from './router'
 
 const app = createApp(App)
 
 // 注册 Element Plus
 app.use(ElementPlus)
+// 注册路由
+app.use(router)
 
 // 注册所有图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

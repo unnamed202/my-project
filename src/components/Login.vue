@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
+import router from '../router'
 
 // 定义登录表单数据类型
 interface LoginForm {
@@ -91,7 +92,11 @@ const handleLogin = () => {
         // 这里可以替换为真实的登录 API 调用
         if (loginForm.username === 'admin' && loginForm.password === '123456') {
           ElMessage.success('登录成功')
-          // 登录成功后可以跳转到其他页面
+          // 设置登录状态
+          localStorage.setItem('isLoggedIn', 'true')
+          // 登录成功后跳转到首页或之前保存的路径
+          const redirectPath = router.currentRoute.value.query.redirect as string || '/'
+          router.push(redirectPath)
         } else {
           ElMessage.error('用户名或密码错误')
         }

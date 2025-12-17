@@ -90,27 +90,45 @@ const error = ref('')
 // 路由
 const router = useRouter()
 
-// 根据状态获取标签类型
+// 根据状态获取标签类型（后端返回英文状态值）
 const getTagType = (status: string): string => {
   const statusMap: Record<string, string> = {
-    '立项': 'info',
-    '招投标': 'warning',
-    '实施': 'primary',
-    '交付': 'success',
-    '结项': 'success',
-    '归档': 'info'
+    'approval': 'warning', // 审批中
+    'bidding': 'warning', // 招投标
+    'implementation': 'primary', // 实施中
+    'delivery': 'success', // 交付
+    'completion': 'success', // 已完成
+    'archived': 'info' // 已归档
   }
   return statusMap[status] || 'info'
 }
 
-// 格式化日期
+// 获取状态中文显示文本
+const getStatusText = (status: string): string => {
+  const statusMap: Record<string, string> = {
+    'approval': '审批中',
+    'bidding': '招投标',
+    'implementation': '实施中',
+    'delivery': '交付',
+    'completion': '已完成',
+    'archived': '已归档'
+  }
+  return statusMap[status] || status
+}
+
+// 格式化日期（带错误处理）
 const formatDate = (dateString: string | null): string => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long'
-  })
+  if (!dateString) return '暂无日期'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return '无效日期'
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'long'
+    })
+  } catch (error) {
+    return '无效日期'
+  }
 }
 
 // 格式化状态日期
@@ -135,50 +153,15 @@ const fetchProjects = async () => {
   
   try {
     
-    // 使用模拟数据代替API调用
-    const mockProjects: Project[] = [
-      {
-        id: '1',
-        name: '项目1项目1',
-        code: 'PROJ-2024-001',
-        description: '项目1描述1',
-        manager_id: 'user-001',
-        department_id: 'dept-001',
-        status: '实施',
-        start_date: '2024-01-15',
-        end_date: '2024-06-30',
-        created_at: '2024-01-01T10:00:00Z',
-        updated_at: '2024-03-15T14:30:00Z',
-        created_by_id: 'user-001',
-        is_deleted: false
-      },
-      {
-        id: '2',
-        name: '项目222',
-        code: 'PROJ-2024-002',
-        description: '描述222',
-        manager_id: 'user-002',
-        department_id: 'dept-002',
-        status: '立项',
-        start_date: '2024-04-01',
-        end_date: '2024-09-30',
-        created_at: '2024-03-20T09:15:00Z',
-        updated_at: '2024-03-25T11:20:00Z',
-        created_by_id: 'user-003',
-        is_deleted: false
-      }
-    ];
-    projects.value = mockProjects;
-    
-/*
-    // 原API调用代码
+    // 调用真实API获取项目列表
     const response = await getProjects({
       page: 1,
       page_size: 100,
       search: searchProject.value
     })
     projects.value = response.results
-    */
+    
+
 
   } catch (err) {
     error.value = '加载项目列表失败，请稍后重试'
@@ -290,6 +273,20 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.card-department {
+  font-size: 12px;
+  color: #606266;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.department-icon {
+  font-size: 14px;
+  color: #909399;
 }
 
 .card-description {

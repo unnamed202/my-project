@@ -1,3 +1,4 @@
+
 <template>
   <div class="login-container">
     <div class="login-form-wrapper">
@@ -45,7 +46,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import router from '../router'
+import { useRouter } from 'vue-router'
+import { login } from '../api/auth'
 
 // 定义登录表单数据类型
 interface LoginForm {
@@ -76,37 +78,46 @@ const loginFormRef = ref()
 // 加载状态
 const loading = ref(false)
 
+// 路由实例
+const router = useRouter()
+
 // 登录处理函数
-const handleLogin = () => {
-  // 表单验证
-  if (!loginFormRef.value) return
-  
-  loginFormRef.value.validate((valid: boolean) => {
-    if (valid) {
-      loading.value = true
-      
-      // 模拟登录请求
-      setTimeout(() => {
-        loading.value = false
+  const handleLogin = async () => {
+    // 表单验证
+    if (!loginFormRef.value) return
+    
+    loginFormRef.value.validate(async (valid: boolean) => {
+      if (valid) {
+        loading.value = true
         
-        // 这里可以替换为真实的登录 API 调用
-        if (loginForm.username === 'admin' && loginForm.password === '123456') {
-          ElMessage.success('登录成功')
-          // 设置登录状态
+        try {
+          // 调用真实的登录 API
+          const response = await login(loginForm)
+          
+          // 登录成功后保存 token 和用户信息
+          localStorage.setItem('token', response.access)
+          localStorage.setItem('refreshToken', response.refresh)
+          localStorage.setItem('userInfo', JSON.stringify(response.user))
           localStorage.setItem('isLoggedIn', 'true')
+          
+          ElMessage.success('登录成功')
+          
           // 登录成功后跳转到首页或之前保存的路径
-          const redirectPath = router.currentRoute.value.query.redirect as string || '/'
+          const redirectPath = (router.currentRoute.value.query.redirect as string) || '/' 
           router.push(redirectPath)
-        } else {
-          ElMessage.error('用户名或密码错误')
+        } catch (error) {
+          // 处理登录错误
+          ElMessage.error('登录失败，请检查用户名和密码')
+          console.error('登录错误:', error)
+        } finally {
+          loading.value = false
         }
-      }, 1500)
-    } else {
-      ElMessage.warning('请完善表单信息')
-      return false
-    }
-  })
-}
+      } else {
+        ElMessage.warning('请完善表单信息')
+        return false
+      }
+    })
+  }
 </script>
 
 <style scoped>

@@ -45,35 +45,37 @@
         class="layout-aside"
       >
         <el-menu
-          default-active="1"
-          class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
-          background-color="#545c64"
-          text-color="#fff"
-          active-text-color="#ffd04b"
-        >
-          <el-menu-item index="1">
-            <el-icon><House /></el-icon>
-            <span>主页</span>
-          </el-menu-item>
-          <el-sub-menu index="2">
-            <template #title>
-              <el-icon><User /></el-icon>
-              <span>团队管理</span>
-            </template>
-            <el-menu-item index="2-1">团队列表</el-menu-item>
-            <el-menu-item index="2-2">成员管理</el-menu-item>
-          </el-sub-menu>
-          <el-menu-item index="3">
-            <el-icon><Document /></el-icon>
-            <span>待办</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <el-icon><Box /></el-icon>
-            <span>资产中心</span>
-          </el-menu-item>
-        </el-menu>
+            :default-active="activeMenu"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            router
+          >
+            <el-menu-item index="/">
+              <el-icon><House /></el-icon>
+              <span>主页</span>
+            </el-menu-item>
+            <el-sub-menu index="2">
+              <template #title>
+                <el-icon><User /></el-icon>
+                <span>团队管理</span>
+              </template>
+              <el-menu-item index="/team">成员管理</el-menu-item>
+              <el-menu-item index="/team/list">团队列表</el-menu-item>
+              <el-menu-item index="/team/settings">团队设置</el-menu-item>
+            </el-sub-menu>
+            <el-menu-item index="/todo">
+              <el-icon><Document /></el-icon>
+              <span>待办</span>
+            </el-menu-item>
+            <el-menu-item index="/assets">
+              <el-icon><Box /></el-icon>
+              <span>资产中心</span>
+            </el-menu-item>
+          </el-menu>
       </el-aside>
 
       <!-- 主内容区域 -->
@@ -100,6 +102,18 @@ const searchText = ref('')
 // 判断是否为项目详情页面
 const isProjectDetailPage = computed(() => {
   return route.path.startsWith('/project/')
+})
+
+// 当前激活的菜单
+const activeMenu = computed(() => {
+  const path = route.path
+  if (path === '/') return '/'
+  if (path === '/team') return '/team'
+  if (path === '/team/list') return '/team/list'
+  if (path === '/team/settings') return '/team/settings'
+  if (path === '/todo') return '/todo'
+  if (path.startsWith('/project/')) return '/'
+  return path
 })
 
 // 菜单展开回调

@@ -3,19 +3,21 @@ import apiClient from './index';
 
 // 定义项目数据类型
 interface Project {
-  id: string;
-  name: string;
-  code: string;
-  description: string;
-  manager_id: string;
-  department_id: string;
-  status: '立项' | '招投标' | '实施' | '交付' | '结项' | '归档';
-  start_date: string | null;
-  end_date: string | null;
-  created_at: string;
-  updated_at: string;
-  created_by_id: string;
-  is_deleted: boolean;
+  id: string; // UUID格式
+  name: string; // 项目名称（必填）
+  code: string; // 项目编号（必填）
+  description: string; // 项目描述
+  manager: string; // 项目负责人ID（UUID）
+  manager_name: string; // 项目负责人姓名（只读）
+  department: string; // 所属部门ID（UUID）
+  department_name: string; // 所属部门名称（只读）
+  status: string; // 项目状态（枚举：planning/tendering/execution/delivery/completed/archived）
+  start_date: string; // 项目开始时间（日期格式）
+  end_date: string | null; // 项目结束时间（可空，日期格式）
+  created_at: string; // 创建时间（日期时间格式，只读）
+  updated_at: string; // 更新时间（日期时间格式，只读）
+  created_by: string; // 创建人ID（UUID，只读）
+  created_by_name: string; // 创建人姓名（只读）
 }
 
 // 项目成员类型

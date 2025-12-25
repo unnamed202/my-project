@@ -23,21 +23,43 @@ const router = createRouter({
           component: Home
         },
         // 其他路由可以在这里添加
-       /* {
+        {
           path: 'team',
           name: 'Team',
-          component: () => import('../components/Team.vue') // 懒加载
+          component: () => import('../views/Team.vue') // 懒加载
         },
+        /*
         {
           path: 'todo',
           name: 'Todo',
           component: () => import('../components/Todo.vue') // 懒加载
         },
         {
+          path: 'team/list',
+          name: 'TeamList',
+          component: () => import('../components/TeamList.vue') // 懒加载
+        },
+        {
+          path: 'team/settings',
+          name: 'TeamSettings',
+          component: () => import('../components/TeamSettings.vue') // 懒加载
+        },
+        {
           path: 'project/:id',
           name: 'ProjectDetail',
           component: () => import('../components/ProjectDetail.vue') // 懒加载
-        } */
+        },
+        {
+          path: 'team/list',
+          name: 'TeamList',
+          component: () => import('../components/TeamList.vue') // 懒加载
+        },
+        {
+          path: 'user/:id',
+          name: 'UserDetail',
+          component: () => import('../components/UserDetail.vue') // 懒加载
+        }
+          */
       ]
     }
   ]

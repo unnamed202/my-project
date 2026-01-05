@@ -52,12 +52,13 @@ const router = createRouter({
           name: 'ProjectGroups',
           component: () => import('../components/ProjectGroups.vue') // 懒加载
         },
+        */
         {
           path: 'project/:id',
           name: 'ProjectDetail',
-          component: () => import('../components/ProjectDetail.vue') // 懒加载
+          component: () => import('../views/ProjectDetail.vue') // 懒加载
         },
-        */
+        
         {
           path: 'user/:id',
           name: 'UserDetail',

@@ -1,63 +1,21 @@
 // 项目管理API服务
 import apiClient from './index';
+import type { Project, ProjectMember, PaginatedResponse, PaginationParams } from '../types/index';
 
-// 定义项目数据类型
-interface Project {
-  id: string; // UUID格式
-  name: string; // 项目名称（必填）
-  code: string; // 项目编号（必填）
-  description: string; // 项目描述
-  manager: string; // 项目负责人ID（UUID）
-  manager_name: string; // 项目负责人姓名（只读）
-  department: string; // 所属部门ID（UUID）
-  department_name: string; // 所属部门名称（只读）
-  status: string; // 项目状态（枚举：planning/tendering/execution/delivery/completed/archived）
-  start_date: string; // 项目开始时间（日期格式）
-  end_date: string | null; // 项目结束时间（可空，日期格式）
-  created_at: string; // 创建时间（日期时间格式，只读）
-  updated_at: string; // 更新时间（日期时间格式，只读）
-  created_by: string; // 创建人ID（UUID，只读）
-  created_by_name: string; // 创建人姓名（只读）
-}
-
-// 项目成员类型
-interface ProjectMember {
-  user_id: string;
-  project_id: string;
-  permission_status: '有效' | '已禁用' | '待审批';
-  position: string;
-  permissions: string[];
-  valid_from: string;
-  valid_to: string | null;
-  created_at: string;
-  updated_at: string;
-  user?: {
-    id: string;
-    username: string;
-    email: string;
-    phone: string;
-    position: string;
-  };
+// 项目创建/更新请求类型
+export interface ProjectCreateUpdate {
+  name: string;
+  code: string;
+  description: string;
+  manager: string;
+  department: string;
+  status: string;
+  start_date: string;
+  end_date: string | null;
 }
 
 // 获取项目列表
-interface GetProjectsParams {
-  page?: number;
-  page_size?: number;
-  search?: string;
-  status?: string;
-  sort_by?: string;
-  sort_order?: 'asc' | 'desc';
-}
-
-interface ProjectsResponse {
-  results: Project[];
-  count: number;
-  page: number;
-  page_size: number;
-}
-
-export const getProjects = async (params?: GetProjectsParams): Promise<ProjectsResponse> => {
+export const getProjects = async (params?: PaginationParams<{ status?: string; sort_by?: string; sort_order?: 'asc' | 'desc' }>): Promise<PaginatedResponse<Project>> => {
   return await apiClient.get('projects/', { params });
 };
 
@@ -67,12 +25,12 @@ export const getProjectDetail = async (projectId: string): Promise<Project> => {
 };
 
 // 创建项目
-export const createProject = async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at' | 'is_deleted'>): Promise<Project> => {
+export const createProject = async (projectData: ProjectCreateUpdate): Promise<Project> => {
   return await apiClient.post('projects/', projectData);
 };
 
 // 更新项目
-export const updateProject = async (projectId: string, projectData: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at' | 'is_deleted'>>): Promise<Project> => {
+export const updateProject = async (projectId: string, projectData: Partial<ProjectCreateUpdate>): Promise<Project> => {
   return await apiClient.put(`projects/${projectId}/`, projectData);
 };
 
@@ -87,8 +45,8 @@ export const updateProjectStatus = async (projectId: string, status: Project['st
 };
 
 // 获取项目成员列表
-export const getProjectMembers = async (projectId: string): Promise<ProjectMember[]> => {
-  return await apiClient.get(`projects/${projectId}/members/`);
+export const getProjectMembers = async (projectId: string, params?: PaginationParams): Promise<PaginatedResponse<ProjectMember> | ProjectMember[]> => {
+  return await apiClient.get(`projects/${projectId}/members/`, { params });
 };
 
 // 添加项目成员
@@ -135,4 +93,3 @@ export const inviteMemberToProject = async (projectId: string, inviteData: {
   return await apiClient.post(`projects/${projectId}/members/invite/`, inviteData);
 };
 
-export type { Project, ProjectMember };

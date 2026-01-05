@@ -34,32 +34,36 @@ const router = createRouter({
           name: 'Todo',
           component: () => import('../components/Todo.vue') // 懒加载
         },
+        */
         {
           path: 'team/list',
           name: 'TeamList',
-          component: () => import('../components/TeamList.vue') // 懒加载
+          component: () => import('../views/TeamList.vue') // 懒加载
         },
+        
         {
           path: 'team/settings',
           name: 'TeamSettings',
-          component: () => import('../components/TeamSettings.vue') // 懒加载
+          component: () => import('../views/TeamSettings.vue') // 懒加载
+        },
+        /*
+        {
+          path: 'team/project-groups',
+          name: 'ProjectGroups',
+          component: () => import('../components/ProjectGroups.vue') // 懒加载
         },
         {
           path: 'project/:id',
           name: 'ProjectDetail',
           component: () => import('../components/ProjectDetail.vue') // 懒加载
         },
-        {
-          path: 'team/list',
-          name: 'TeamList',
-          component: () => import('../components/TeamList.vue') // 懒加载
-        },
+        */
         {
           path: 'user/:id',
           name: 'UserDetail',
-          component: () => import('../components/UserDetail.vue') // 懒加载
+          component: () => import('../views/UserDetail.vue') // 懒加载
         }
-          */
+        
       ]
     }
   ]

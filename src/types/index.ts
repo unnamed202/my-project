@@ -52,16 +52,18 @@ export interface Project {
 
 // 项目成员类型
 export interface ProjectMember {
-  user_id: string;
-  project_id: string;
-  permission_status: '有效' | '已禁用' | '待审批';
-  position: string;
-  permissions: string[];
-  valid_from: string;
-  valid_to: string | null;
-  created_at: string;
-  updated_at: string;
-  user?: User;
+  id: string; // UUID格式
+  user: string; // 用户ID（UUID）
+  user_info: User; // 用户详细信息
+  project: string; // 项目ID（UUID）
+  project_name: string; // 项目名称
+  permission_status: 'active' | 'inactive' | 'pending'; // 权限状态
+  position: string; // 项目内职位
+  permissions: string[]; // 权限列表（如："view", "download"）
+  valid_from: string; // 权限开始时间
+  valid_to: string | null; // 权限结束时间
+  created_at: string; // 创建时间
+  updated_at: string; // 更新时间
 }
 
 // 文件数据类型

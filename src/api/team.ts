@@ -35,11 +35,15 @@ export const transferTeam = async (departmentId: string, newManagerId: string): 
 };
 
 // 合并团队
-export const mergeTeams = async (sourceDepartmentId: string, targetDepartmentId: string): Promise<Department> => {
-  return await apiClient.post('departments/merge/', {
-    source_department_id: sourceDepartmentId,
-    target_department_id: targetDepartmentId
-  });
+export interface MergeTeamParams {
+  source_department_ids: string[];
+  target_department_name: string;
+  target_department_code: string;
+  manager_id: string;
+}
+
+export const mergeTeams = async (params: MergeTeamParams): Promise<Department> => {
+  return await apiClient.post('departments/merge/', params);
 };
 
 // 解散团队
@@ -65,6 +69,11 @@ export const addUsersToDepartment = async (departmentId: string, userIds: string
 // 获取用户详情
 export const getUserById = async (userId: string): Promise<User> => {
   return await apiClient.get(`users/${userId}/`);
+};
+
+// 获取用户项目列表
+export const getUserProjects = async (userId: string): Promise<Project[]> => {
+  return await apiClient.get(`users/${userId}/projects/`);
 };
 
 // 更新用户信息

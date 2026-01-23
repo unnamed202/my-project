@@ -6,7 +6,7 @@
       <div class="page-actions">
         <el-button type="default" class="action-btn" @click="fetchProjects">更新数据</el-button>
         <el-button type="default" class="action-btn">添加人员</el-button>
-        <el-button type="primary" class="action-btn">新建项目</el-button>
+        <el-button type="primary" class="action-btn"@click="projectCreateVisible = true">新建项目</el-button>
       </div>
     </div>
 
@@ -67,6 +67,12 @@
       <div v-else class="no-data">
         <el-empty description="暂无项目数据" />
       </div>
+
+      <!-- 新建项目对话框 -->
+      <ProjectCreate
+        v-model="projectCreateVisible"
+        @success="handleProjectCreated"
+      />
     </div>
   </div>
 </template>
@@ -76,7 +82,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Document, User } from '@element-plus/icons-vue'
 import { getProjects } from '../api/projects'
-import type { Project } from '../api/projects'
+import type { Project } from '../types/index'
+import ProjectCreate from '../components/ProjectCreat.vue'
 
 // 搜索框数据
 const searchProject = ref('')
@@ -86,6 +93,8 @@ const projects = ref<Project[]>([])
 const loading = ref(false)
 // 错误信息
 const error = ref('')
+// 新建项目对话框可见性
+const projectCreateVisible = ref(false)
 
 // 路由
 const router = useRouter()
@@ -103,6 +112,7 @@ const getTagType = (status: string): string => {
   return statusMap[status] || 'info'
 }
 
+/*
 // 获取状态中文显示文本
 const getStatusText = (status: string): string => {
   const statusMap: Record<string, string> = {
@@ -115,6 +125,7 @@ const getStatusText = (status: string): string => {
   }
   return statusMap[status] || status
 }
+*/
 
 // 格式化日期（带错误处理）
 const formatDate = (dateString: string | null): string => {
@@ -185,6 +196,12 @@ const filteredProjects = computed(() => {
 // 监听搜索框变化，重新获取数据
 const handleSearch = () => {
   fetchProjects()
+}
+
+// 处理项目创建成功
+const handleProjectCreated = (newProject: Project) => {
+  // 将新项目添加到列表顶部
+  projects.value.unshift(newProject)
 }
 
 // 组件挂载时获取数据

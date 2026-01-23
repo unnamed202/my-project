@@ -1,5 +1,6 @@
 // 认证相关API服务
 import apiClient from './index';
+import type { User } from '../types/index';
 
 // 登录请求参数类型
 interface LoginParams {
@@ -11,21 +12,7 @@ interface LoginParams {
 interface LoginResponse {
   access: string; // JWT Access Token
   refresh: string; // JWT Refresh Token
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    phone: string;
-    gender: 'male' | 'female' | 'other';
-    position: string;
-    department_id: string;
-    role: 'super_admin' | 'general_manager' | 'dept_manager' | 'project_manager' | 'employee';
-    last_operation_time: string;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-    created_by_id: string;
-  };
+  user: User;
 }
 
 // 刷新Token请求参数类型

@@ -46,13 +46,13 @@ const router = createRouter({
           name: 'TeamSettings',
           component: () => import('../views/TeamSettings.vue') // 懒加载
         },
-        /*
+        
         {
           path: 'team/project-groups',
           name: 'ProjectGroups',
-          component: () => import('../components/ProjectGroups.vue') // 懒加载
+          component: () => import('../views/ProjectGroups.vue') // 懒加载
         },
-        */
+        
         {
           path: 'project/:id',
           name: 'ProjectDetail',

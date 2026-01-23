@@ -14,6 +14,9 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <span class="department-name">
+          {{ currentUser?.department_name || '未知部门' }}
+        </span>
       </div>
       <div class="header-right">
         <el-input
@@ -25,6 +28,10 @@
         />
         <el-dropdown trigger="click" class="user-dropdown">
           <div class="user-info">
+            <el-avatar size="small" class="user-avatar">
+              {{ currentUser?.full_name?.charAt(0) || '?' }}
+            </el-avatar>
+            <span class="user-name">{{ currentUser?.full_name || '未知用户' }}</span>
             <el-icon class="el-icon--right"><ArrowDown /></el-icon>
           </div>
           <template #dropdown>
@@ -60,10 +67,11 @@
             </el-menu-item>
             <el-sub-menu index="2">
               <template #title>
-                <el-icon><User /></el-icon>
+                <el-icon><UserIcon /></el-icon>
                 <span>团队管理</span>
               </template>
               <el-menu-item index="/team">成员管理</el-menu-item>
+              <el-menu-item index="/team/project-groups">项目组管理</el-menu-item>
               <el-menu-item index="/team/list">团队列表</el-menu-item>
               <el-menu-item index="/team/settings">团队设置</el-menu-item>
             </el-sub-menu>
@@ -87,10 +95,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { House, User, Document, Box } from '@element-plus/icons-vue'
+import { House, User as UserIcon, Document, Box, ArrowDown } from '@element-plus/icons-vue'
+import { getCurrentUser } from '../api/auth'
+import type { User } from '../types/index'
 
 // 路由实例
 const router = useRouter()
@@ -98,6 +108,19 @@ const route = useRoute()
 
 // 搜索文本
 const searchText = ref('')
+
+// 当前用户信息
+const currentUser = ref<User | null>(null)
+
+// 加载当前用户信息
+const loadCurrentUser = async () => {
+  try {
+    const user = await getCurrentUser()
+    currentUser.value = user
+  } catch (error) {
+    console.error('获取当前用户信息失败:', error)
+  }
+}
 
 // 判断是否为项目详情页面
 const isProjectDetailPage = computed(() => {
@@ -109,6 +132,7 @@ const activeMenu = computed(() => {
   const path = route.path
   if (path === '/') return '/'
   if (path === '/team') return '/team'
+  if (path === '/team/project-groups') return '/team/project-groups'
   if (path === '/team/list') return '/team/list'
   if (path === '/team/settings') return '/team/settings'
   if (path === '/todo') return '/todo'
@@ -134,6 +158,11 @@ const handleLogout = () => {
   router.push('/login')
   ElMessage.success('已退出登录')
 }
+
+// 组件挂载时加载用户信息
+onMounted(() => {
+  loadCurrentUser()
+})
 </script>
 
 <style scoped>
@@ -163,6 +192,16 @@ const handleLogout = () => {
   color: #303133;
 }
 
+.department-name {
+  font-size: 14px;
+  font-weight: 600; /* 字体加粗 */
+  color: #606266;
+  margin-left: 24px; /* 增加与系统名称的间距 */
+  padding: 4px 8px;
+  background-color: #f0f2f5;
+  border-radius: 4px;
+}
+
 .header-right {
   display: flex;
   align-items: center;
@@ -180,6 +219,13 @@ const handleLogout = () => {
 .user-name {
   font-size: 14px;
   color: #606266;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* 增加头像和名称之间的间距 */
   cursor: pointer;
 }
 

@@ -267,7 +267,7 @@ import { getProjectDocuments, deleteFile } from '../api/documents'
 import type { Project } from '../types/index'
 
 // 引入项目成员弹窗组件
-import ProjectMembersDialog from '../components/ProjectMemberDialog.vue'
+import ProjectMembersDialog from '../components/ProjectMembersDialog.vue'
 
 // 定义文件数据类型
 interface FileItem {
